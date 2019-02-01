@@ -1,2 +1,6 @@
-npm-debug.log
-node_modules
+node_modules/
+module_test/
+coverage/
+.DS_Store
+.idea
+__logs/

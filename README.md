@@ -1,38 +1,39 @@
-# require-directory
+# Rir
 
-Recursively iterates over specified directory, `require()`'ing each file, and returning a nested hash structure containing those modules.
+Recursively iterates over specified directory, `require()`'ing each file, and returning a nested hash structure containing those modules.  (Forks from: [node-require-directory](https://github.com/troygoode/node-require-directory))
 
-**[Follow me (@troygoode) on Twitter!](https://twitter.com/intent/user?screen_name=troygoode)**
+Rir means **R**equ**ir**eD**ir**ectory.
 
-[![NPM](https://nodei.co/npm/require-directory.png?downloads=true&stars=true)](https://nodei.co/npm/require-directory/)
 
-[![build status](https://secure.travis-ci.org/troygoode/node-require-directory.png)](http://travis-ci.org/troygoode/node-require-directory)
+
 
 ## How To Use
 
-### Installation (via [npm](https://npmjs.org/package/require-directory))
+### Installation (via [npm](https://npmjs.org/package/rir))
 
 ```bash
-$ npm install require-directory
+$ npm install rir
 ```
 
 ### Usage
 
 A common pattern in node.js is to include an index file which creates a hash of the files in its current directory. Given a directory structure like so:
+```
+app.js
+routes/
+  index.js
+  home.js
+  auth/
+    login.js
+    logout.js
+    register.js
 
-* app.js
-* routes/
-  * index.js
-  * home.js
-  * auth/
-    * login.js
-    * logout.js
-    * register.js
+```
 
-`routes/index.js` uses `require-directory` to build the hash (rather than doing so manually) like so:
+`routes/index.js` uses `rir` to build the hash (rather than doing so manually) like so:
 
 ```javascript
-var requireDirectory = require('require-directory');
+var requireDirectory = require('rir');
 module.exports = requireDirectory(module);
 ```
 
@@ -69,33 +70,33 @@ var routes = {
 You can specify which directory you want to build a tree of (if it isn't the current directory for whatever reason) by passing it as the second parameter. Not specifying the path (`requireDirectory(module)`) is the equivelant of `requireDirectory(module, __dirname)`:
 
 ```javascript
-var requireDirectory = require('require-directory');
+var requireDirectory = require('rir');
 module.exports = requireDirectory(module, './some/subdirectory');
 ```
 
 For example, in the [example in the Usage section](#usage) we could have avoided creating `routes/index.js` and instead changed the first lines of `app.js` to:
 
 ```javascript
-var requireDirectory = require('require-directory');
+var requireDirectory = require('rir');
 var routes = requireDirectory(module, './routes');
 ```
 
 ## Options
 
-You can pass an options hash to `require-directory` as the 2nd parameter (or 3rd if you're passing the path to another directory as the 2nd parameter already). Here are the available options:
+You can pass an options hash to `rir` as the 2nd parameter (or 3rd if you're passing the path to another directory as the 2nd parameter already). Here are the available options:
 
 ### Whitelisting
 
 Whitelisting (either via RegExp or function) allows you to specify that only certain files be loaded.
 
 ```javascript
-var requireDirectory = require('require-directory'),
+var requireDirectory = require('rir'),
   whitelist = /onlyinclude.js$/,
   hash = requireDirectory(module, {include: whitelist});
 ```
 
 ```javascript
-var requireDirectory = require('require-directory'),
+var requireDirectory = require('rir'),
   check = function(path){
     if(/onlyinclude.js$/.test(path)){
       return true; // go ahead and include
@@ -111,13 +112,13 @@ var requireDirectory = require('require-directory'),
 Blacklisting (either via RegExp or function) allows you to specify that all but certain files should be loaded.
 
 ```javascript
-var requireDirectory = require('require-directory'),
+var requireDirectory = require('rir'),
   blacklist = /dontinclude\.js$/,
   hash = requireDirectory(module, {exclude: blacklist});
 ```
 
 ```javascript
-var requireDirectory = require('require-directory'),
+var requireDirectory = require('rir'),
   check = function(path){
     if(/dontinclude\.js$/.test(path)){
       return false; // don't include
@@ -130,10 +131,10 @@ var requireDirectory = require('require-directory'),
 
 ### Visiting Objects As They're Loaded
 
-`require-directory` takes a function as the `visit` option that will be called for each module that is added to module.exports.
+`rir` takes a function as the `visit` option that will be called for each module that is added to module.exports.
 
 ```javascript
-var requireDirectory = require('require-directory'),
+var requireDirectory = require('rir'),
   visitor = function(obj) {
     console.log(obj); // will be called for every module that is loaded
   },
@@ -143,7 +144,7 @@ var requireDirectory = require('require-directory'),
 The visitor can also transform the objects by returning a value:
 
 ```javascript
-var requireDirectory = require('require-directory'),
+var requireDirectory = require('rir'),
   visitor = function(obj) {
     return obj(new Date());
   },
@@ -153,7 +154,7 @@ var requireDirectory = require('require-directory'),
 ### Renaming Keys
 
 ```javascript
-var requireDirectory = require('require-directory'),
+var requireDirectory = require('rir'),
   renamer = function(name) {
     return name.toUpperCase();
   },
@@ -163,7 +164,7 @@ var requireDirectory = require('require-directory'),
 ### No Recursion
 
 ```javascript
-var requireDirectory = require('require-directory'),
+var requireDirectory = require('rir'),
   hash = requireDirectory(module, {recurse: false});
 ```
 
@@ -181,4 +182,5 @@ $ npm test
 ## Author
 
 [Troy Goode](https://github.com/TroyGoode) ([troygoode@gmail.com](mailto:troygoode@gmail.com))
+[Owen Luke](https://github.com/hiowenluke) ([hi.owen.luke@gmail.com](mailto:hi.owen.luke@gmail.com))
 

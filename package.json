@@ -1,7 +1,7 @@
 {
-  "author": "Troy Goode <troygoode@gmail.com> (http://github.com/troygoode/)",
-  "name": "require-directory",
-  "version": "2.1.1",
+  "author": "hi.owen.luke@gmail.com",
+  "name": "rir",
+  "version": "1.0.0",
   "description": "Recursively iterates over specified directory, require()'ing each file, and returning a nested hash structure containing those modules.",
   "keywords": [
     "require",
@@ -9,29 +9,34 @@
     "library",
     "recursive"
   ],
-  "homepage": "https://github.com/troygoode/node-require-directory/",
+  "homepage": "https://github.com/hiowenluke/rir",
   "main": "index.js",
   "repository": {
     "type": "git",
-    "url": "git://github.com/troygoode/node-require-directory.git"
+    "url": "git://github.com/hiowenluke/rir.git"
   },
   "contributors": [
     {
       "name": "Troy Goode",
       "email": "troygoode@gmail.com",
       "web": "http://github.com/troygoode/"
+    },
+    {
+      "name": "Owen Luke",
+      "email": "hi.owen.luke@gmail.com",
+      "web": "http://github.com/hiowenluke/"
     }
   ],
   "license": "MIT",
   "bugs": {
-    "url": "http://github.com/troygoode/node-require-directory/issues/"
+    "url": "http://github.com/hiowenluke/rir/issues/"
   },
   "engines": {
     "node": ">=0.10.0"
   },
   "devDependencies": {
     "jshint": "^2.6.0",
-    "mocha": "^2.1.0"
+    "mocha": "^5.2.0"
   },
   "scripts": {
     "test": "mocha",
