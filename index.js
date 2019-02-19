@@ -55,6 +55,8 @@ function requireDirectory(m, path, options) {
 		}
 	}
 
+	var vfn = options.virtualIndexFn;
+
 	// if no path was passed in, assume the equivelant of __dirname from caller
 	// otherwise, resolve path relative to the equivalent of __dirname
 	path = !path ? dirname(m.filename) : resolve(dirname(m.filename), path);
@@ -77,6 +79,12 @@ function requireDirectory(m, path, options) {
 				else {
 					// load all sub-directories in this directory
 					files = requireDirectory(m, joined, options);
+
+					// if a virtual index function is specified, apply it
+					if (vfn) {
+						files = vfn(files);
+						files.isIndexJs = true;
+					}
 				}
 			}
 			else {
