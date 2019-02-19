@@ -1,7 +1,7 @@
 {
   "author": "hi.owen.luke@gmail.com",
   "name": "rir",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Recursively iterates over specified directory, require()'ing each file, and returning a nested hash structure containing those modules.",
   "keywords": [
     "require",
