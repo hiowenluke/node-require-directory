@@ -150,6 +150,28 @@
 			assert.equal(undefined, test.bun);
 		});
 
+		test('should take an optional array blacklist definition', function () {
+			//arrange
+			//act
+			var test = reqdir(module, PATH_TO_EXAMPLE, {exclude: ['bun']});
+
+			//assert
+			assert.equal('foo!', test.foo);
+			assert.equal('foo2!', test.foo2);
+			assert.equal(undefined, test.bun);
+		});
+
+		test('should take an optional array blacklist definition with .json', function () {
+			//arrange
+			//act
+			var test = reqdir(module, PATH_TO_EXAMPLE, {exclude: ['bun.json']});
+
+			//assert
+			assert.equal('foo!', test.foo);
+			assert.equal('foo2!', test.foo2);
+			assert.equal(undefined, test.bun);
+		});
+
 		test('should exclude an empty directory', function () {
 			//act
 			var test = reqdir(module, PATH_TO_EXAMPLE);
