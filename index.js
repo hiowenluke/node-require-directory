@@ -4,41 +4,61 @@
 
 'use strict';
 
-var fs = require('fs'),
-	join = require('path').join,
-	resolve = require('path').resolve,
-	dirname = require('path').dirname,
-	defaultOptions = {
-		extensions: ['js', 'json', 'coffee'],
-		recurse: true,
-		rename: function (name) {
-			return name;
-		},
-		visit: function (obj) {
-			return obj;
-		}
-	};
+var fs = require('fs');
+var join = require('path').join;
+var resolve = require('path').resolve;
+var dirname = require('path').dirname;
 
-function checkFileInclusion(path, filename, options) {
-	return (
-		// verify file has valid extension
-		(new RegExp('\\.(' + options.extensions.join('|') + ')$', 'i').test(filename)) &&
+var defaultOptions = {
+	extensions: ['js', 'json', 'coffee'],
+	recurse: true,
 
-		// if options.include is a RegExp, evaluate it and make sure the path passes
-		!(options.include && options.include instanceof RegExp && !options.include.test(path)) &&
+	rename: function (name) {
+		return name;
+	},
 
-		// if options.include is a function, evaluate it and make sure the path passes
-		!(options.include && typeof options.include === 'function' && !options.include(path, filename)) &&
+	visit: function (obj) {
+		return obj;
+	}
+};
 
-		// if options.exclude is a RegExp, evaluate it and make sure the path doesn't pass
-		!(options.exclude && options.exclude instanceof RegExp && options.exclude.test(path)) &&
+var checkInArray = function(path, filename, arr, True) {
+	var False = !True;
 
-		// if options.exclude is a function, evaluate it and make sure the path doesn't pass
-		!(options.exclude && typeof options.exclude === 'function' && options.exclude(path, filename))
-	);
-}
+	if (arr instanceof RegExp) {
+		if (arr.test(path) === False) return false;
+	}
 
-function requireDirectory(m, path, options) {
+	if (arr instanceof Array) {
+		if ((arr.indexOf(filename) === -1 && arr.indexOf(filename.split('.')[0]) === -1) === True) return false;
+	}
+
+	if (typeof arr === 'function') {
+		if (arr(path, filename) === False) return false;
+	}
+
+	return true;
+};
+
+var checkFileInclusion = function(path, filename, options) {
+
+	if (options.extensions) {
+		var reg = new RegExp('\\.(' + options.extensions.join('|') + ')$', 'i');
+		if (!reg.test(filename)) return false;
+	}
+
+	if (options.include) {
+		return checkInArray(path, filename, options.include, true);
+	}
+
+	if (options.exclude) {
+		return checkInArray(path, filename, options.exclude, false);
+	}
+
+	return true;
+};
+
+var requireDirectory = function(m, path, options) {
 	var retval = {};
 
 	// path is optional
@@ -53,6 +73,14 @@ function requireDirectory(m, path, options) {
 		if (typeof options[prop] === 'undefined') {
 			options[prop] = defaultOptions[prop];
 		}
+	}
+
+	if (typeof options.exclude === 'string') {
+		options.exclude = [options.exclude];
+	}
+
+	if (typeof options.include === 'string') {
+		options.include = [options.include];
 	}
 
 	var vfn = options.virtualIndexFn;
@@ -102,13 +130,13 @@ function requireDirectory(m, path, options) {
 		else if (joined !== m.filename && checkFileInclusion(joined, filename, options)) {
 			// hash node key shouldn't include file extension
 			key = filename.substring(0, filename.lastIndexOf('.'));
-			obj = m.require(joined);
+			obj = require(joined);
 			retval[options.rename(key, joined, filename)] = options.visit(obj, joined, filename) || obj;
 		}
 	});
 
 	return retval;
-}
+};
 
 module.exports = requireDirectory;
 module.exports.defaults = defaultOptions;
