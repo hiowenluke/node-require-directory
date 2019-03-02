@@ -87,6 +87,28 @@
 			assert.equal('baz!', test.bar.baz);
 		});
 
+		test('should take an optional array whitelist definition', function () {
+			//arrange
+			//act
+			var test = reqdir(module, PATH_TO_EXAMPLE, {include: ['foo', 'foo2']});
+
+			//assert
+			assert.equal('foo!', test.foo);
+			assert.equal('foo2!', test.foo2);
+			assert.equal(undefined, test.bun);
+		});
+
+		test('should take an optional array whitelist definition with .js', function () {
+			//arrange
+			//act
+			var test = reqdir(module, PATH_TO_EXAMPLE, {include: ['foo.js', 'foo2.js']});
+
+			//assert
+			assert.equal('foo!', test.foo);
+			assert.equal('foo2!', test.foo2);
+			assert.equal(undefined, test.bun);
+		});
+
 		test('should take an optional regex whitelist definition', function () {
 			//arrange
 			var whitelist = /(foo|foo2).js$/;
