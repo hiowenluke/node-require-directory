@@ -99,8 +99,9 @@ var requireDirectory = function(m, path, options) {
 		// this node is a directory
 		if (fs.statSync(joined).isDirectory()) {
 			if (options.recurse) {
-				// load valid Node.js directory
-				if (fs.existsSync(joined + '/index.js')) {
+
+				// load valid Node.js directory if the index.js is not in options.exclude
+				if (fs.existsSync(joined + '/index.js') && checkFileInclusion(joined, 'index.js', options)) {
 					files = require(joined);
 					files.isIndexJs = true;
 				}
