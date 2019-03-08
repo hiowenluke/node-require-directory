@@ -22,40 +22,49 @@ var defaultOptions = {
 	}
 };
 
-var checkInArray = function(path, filename, arr, True) {
-	var False = !True;
+var check = {
+	inArray: function(path, filename, arr, True) {
+		var False = !True;
 
-	if (arr instanceof RegExp) {
-		if (arr.test(path) === False) return false;
+		if (arr instanceof RegExp) {
+			if (arr.test(path) === False) return false;
+		}
+
+		if (arr instanceof Array) {
+			if ((arr.indexOf(filename) === -1 && arr.indexOf(filename.split('.')[0]) === -1) === True) return false;
+		}
+
+		if (typeof arr === 'function') {
+			if (arr(path, filename) === False) return false;
+		}
+
+		return true;
+	},
+
+	inclusion: function(path, filename, options) {
+		if (options.include) {
+			return this.inArray(path, filename, options.include, true);
+		}
+
+		if (options.exclude) {
+			return this.inArray(path, filename, options.exclude, false);
+		}
+
+		return true;
+	},
+
+	fileInclusion: function(path, filename, options) {
+		if (options.extensions) {
+			var reg = new RegExp('\\.(' + options.extensions.join('|') + ')$', 'i');
+			if (!reg.test(filename)) return false;
+		}
+
+		return this.inclusion(path, filename, options);
+	},
+
+	dirInclusion: function(path, filename, options) {
+		return this.inclusion(path, filename, options);
 	}
-
-	if (arr instanceof Array) {
-		if ((arr.indexOf(filename) === -1 && arr.indexOf(filename.split('.')[0]) === -1) === True) return false;
-	}
-
-	if (typeof arr === 'function') {
-		if (arr(path, filename) === False) return false;
-	}
-
-	return true;
-};
-
-var checkFileInclusion = function(path, filename, options) {
-
-	if (options.extensions) {
-		var reg = new RegExp('\\.(' + options.extensions.join('|') + ')$', 'i');
-		if (!reg.test(filename)) return false;
-	}
-
-	if (options.include) {
-		return checkInArray(path, filename, options.include, true);
-	}
-
-	if (options.exclude) {
-		return checkInArray(path, filename, options.exclude, false);
-	}
-
-	return true;
 };
 
 var requireDirectory = function(m, path, options) {
@@ -98,10 +107,12 @@ var requireDirectory = function(m, path, options) {
 
 		// this node is a directory
 		if (fs.statSync(joined).isDirectory()) {
+			if (!check.dirInclusion(joined, filename, options)) return;
+
 			if (options.recurse) {
 
 				// load valid Node.js directory if the index.js is not in options.exclude
-				if (fs.existsSync(joined + '/index.js') && checkFileInclusion(joined, 'index.js', options)) {
+				if (fs.existsSync(joined + '/index.js') && check.fileInclusion(joined, 'index.js', options)) {
 					files = require(joined);
 					files.isIndexJs = true;
 				}
@@ -128,7 +139,7 @@ var requireDirectory = function(m, path, options) {
 				retval[options.rename(filename, joined, filename)] = files;
 			}
 		}
-		else if (joined !== m.filename && checkFileInclusion(joined, filename, options)) {
+		else if (joined !== m.filename && check.fileInclusion(joined, filename, options)) {
 			// hash node key shouldn't include file extension
 			key = filename.substring(0, filename.lastIndexOf('.'));
 			obj = require(joined);
