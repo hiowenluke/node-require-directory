@@ -122,7 +122,9 @@ var requireDirectory = function(m, path, options) {
 
 					// if a virtual index function is specified, apply it
 					if (vfn) {
-						files = vfn(files);
+
+						// pass joined and filename to vfn
+						files = vfn(files, joined, filename);
 						files.isIndexJs = true;
 					}
 				}
