@@ -120,7 +120,7 @@ var requireDirectory = function(m, path, options) {
 					// load all sub-directories in this directory
 					files = requireDirectory(m, joined, options);
 
-					// if a virtual index function is specified, apply it
+					// if a virtual index function is specified (e.g., in kdo), apply it
 					if (vfn) {
 
 						// pass joined and filename to vfn
