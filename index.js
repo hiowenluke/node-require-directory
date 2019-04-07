@@ -100,6 +100,23 @@ var requireDirectory = function(m, path, options) {
 
 	// get the path of each file in specified directory, append to current tree node, recurse
 	fs.readdirSync(path).forEach(function (filename) {
+
+		// Known issue:
+		// 		File names are sorted according to unicode encoding. When multiple file names
+		// 		contain uppercase and lowercase letters, the sort results are not as expected.
+
+		// For example:
+
+		// The file names order in directory like blow:
+		//		a.js
+		//		B.js
+		//		c.js
+
+		// The file names order with fs.readdirSync like below:
+		//		B.js
+		//		a.js
+		//		c.js
+
 		var joined = join(path, filename),
 			files,
 			key,
