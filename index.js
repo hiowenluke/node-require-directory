@@ -133,6 +133,9 @@ var requireDirectory = function(m, path, options) {
 				// load valid Node.js directory if the index.js is not in options.exclude
 				if (fs.existsSync(joined + '/index.js') && check.fileInclusion(joined, 'index.js', options)) {
 					files = require(joined);
+
+					// set a flag for index.js, important
+					files.isIndexJs = true;
 				}
 				else {
 					// load all sub-directories in this directory
@@ -143,6 +146,7 @@ var requireDirectory = function(m, path, options) {
 
 						// pass joined and filename to vfn
 						files = vfn(files, joined, filename);
+						files.isIndexJs = true;
 					}
 				}
 			}
@@ -150,6 +154,7 @@ var requireDirectory = function(m, path, options) {
 				// load valid Node.js directory
 				if (fs.existsSync(joined + '/index.js')) {
 					files = require(joined);
+					files.isIndexJs = true;
 				}
 			}
 			// exclude empty directories
@@ -161,9 +166,6 @@ var requireDirectory = function(m, path, options) {
 			// hash node key shouldn't include file extension
 			key = filename.substring(0, filename.lastIndexOf('.'));
 			obj = require(joined);
-
-			// If need to attach filename (for kdo), then do it
-			isAttachFileName && (obj.filename = filename.replace(/\.[a-zA-Z]+$/, ''));
 
 			retval[options.rename(key, joined, filename)] = options.visit(obj, joined, filename) || obj;
 		}
