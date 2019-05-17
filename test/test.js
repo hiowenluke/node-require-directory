@@ -74,8 +74,9 @@
 
 		test('should take an optional whitelist function', function () {
 			//arrange
-			var delegate = function (path) {
-				return !(/foo2.js$/.test(path)) && /\.js$/.test(path);
+			var delegate = function (path, isDirectory) {
+				var isRightType = isDirectory ? true : /\.js$/.test(path);
+				return !(/foo2.js$/.test(path)) && isRightType;
 			};
 
 			//act
@@ -124,8 +125,9 @@
 
 		test('should take an optional blacklist function', function () {
 			//arrange
-			var delegate = function (path) {
-				return (/foo2.js$/.test(path)) && /\.js$/.test(path);
+			var delegate = function (path, isDirectory) {
+				var isRightType = isDirectory ? true : /\.js$/.test(path);
+				return (/foo2.js$/.test(path)) && isRightType;
 			};
 
 			//act
