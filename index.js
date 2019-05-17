@@ -24,7 +24,7 @@ var defaultOptions = {
 };
 
 var check = {
-	inArray: function(path, filename, arr, True) {
+	inArray: function(path, filename, arr, isDirectory, True) {
 		var False = !True;
 
 		if (arr instanceof RegExp) {
@@ -36,19 +36,19 @@ var check = {
 		}
 
 		if (typeof arr === 'function') {
-			if (arr(path, filename) === False) return false;
+			if (arr(path, filename, isDirectory) === False) return false;
 		}
 
 		return true;
 	},
 
-	inclusion: function(path, filename, options) {
+	inclusion: function(path, filename, options, isDirectory) {
 		if (options.include) {
-			return this.inArray(path, filename, options.include, true);
+			return this.inArray(path, filename, options.include, isDirectory, true);
 		}
 
 		if (options.exclude) {
-			return this.inArray(path, filename, options.exclude, false);
+			return this.inArray(path, filename, options.exclude, isDirectory, false);
 		}
 
 		return true;
@@ -64,7 +64,7 @@ var check = {
 	},
 
 	dirInclusion: function(path, filename, options) {
-		return this.inclusion(path, filename, options);
+		return this.inclusion(path, filename, options, true);
 	}
 };
 
