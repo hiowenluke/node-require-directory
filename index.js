@@ -12,6 +12,7 @@ var dirname = require('path').dirname;
 var defaultOptions = {
 	extensions: ['js', 'json', 'coffee'],
 	recurse: true,
+	isAttachFileName: false,
 
 	rename: function (name) {
 		return name;
@@ -93,6 +94,7 @@ var requireDirectory = function(m, path, options) {
 	}
 
 	var vfn = options.virtualIndexFn;
+	var isAttachFileName = options.isAttachFileName;
 
 	// if no path was passed in, assume the equivelant of __dirname from caller
 	// otherwise, resolve path relative to the equivalent of __dirname
@@ -160,8 +162,8 @@ var requireDirectory = function(m, path, options) {
 			key = filename.substring(0, filename.lastIndexOf('.'));
 			obj = require(joined);
 
-			// for kdo
-			obj.filename = filename.replace(/\.[a-zA-Z]+$/, '');
+			// If need to attach filename (for kdo), then do it
+			isAttachFileName && (obj.filename = filename.replace(/\.[a-zA-Z]+$/, ''));
 
 			retval[options.rename(key, joined, filename)] = options.visit(obj, joined, filename) || obj;
 		}
