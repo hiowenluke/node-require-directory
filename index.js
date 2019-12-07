@@ -133,9 +133,6 @@ var requireDirectory = function(m, path, options) {
 				// load valid Node.js directory if the index.js is not in options.exclude
 				if (fs.existsSync(joined + '/index.js') && check.fileInclusion(joined, 'index.js', options)) {
 					files = require(joined);
-
-					// set a flag for index.js, important
-					files.__isIndexJs = true;
 				}
 				else {
 					// load all sub-directories in this directory
@@ -146,7 +143,6 @@ var requireDirectory = function(m, path, options) {
 
 						// pass joined and filename to vfn
 						files = vfn(files, joined, filename);
-						files.__isIndexJs = true;
 					}
 				}
 			}
@@ -154,7 +150,6 @@ var requireDirectory = function(m, path, options) {
 				// load valid Node.js directory
 				if (fs.existsSync(joined + '/index.js')) {
 					files = require(joined);
-					files.__isIndexJs = true;
 				}
 			}
 			// exclude empty directories
