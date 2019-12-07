@@ -152,6 +152,12 @@ var requireDirectory = function(m, path, options) {
 					files = require(joined);
 				}
 			}
+
+			// for module.exports.__proto__ = {a: 1, b: 2, c: 3}
+			if (files && !Object.keys(files).length && Object.keys(files.__proto__).length) {
+				files = files.__proto__;
+			}
+
 			// exclude empty directories
 			if (files && (typeof files === 'function' || Object.keys(files).length)) {
 				retval[options.rename(filename, joined, filename)] = files;
